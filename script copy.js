@@ -199,7 +199,7 @@ function loadNewElement() {
       <button class="candle-btn" id="candle">🕯️</button>
       <div class="tier" id="t1">HAPPY</div>
       <div class="tier" id="t2">BIRTHDAY</div>
-      <div class="tier" id="t3">MAYALU</div>
+      <div class="tier" id="t3">Budi</div>
       <div class="instruction" id="instr">Smash the candle!</div>
     </div>
   `;

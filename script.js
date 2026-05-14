@@ -12,8 +12,50 @@ let isRaining = true; // Flag to control the exit
 let spawnRate = 0; // Starts at 0 for a slow build-up
 let animationID;
 
+let track1 = new Audio('victim/track1.mp3');
+track1.loop = true
+track1.volume = 0
+let track2 = new Audio('victim/siuu2.mp3');
+
+function easeOutVolume(audioTrack, easeFactor) {
+    easeFactor = easeFactor || 0.01; 
+    // const easeFactor = 0.01; // Higher = faster fade, Lower = slower fade
+
+    function step() {
+        if (audioTrack.volume > 0.1) {
+            // Drop volume based on a fraction of current volume
+            audioTrack.volume -= audioTrack.volume * easeFactor;
+            requestAnimationFrame(step);
+        } else {
+            audioTrack.volume = 0.1;
+            // audioTrack.pause(); // Stop playback once silent
+        }
+    }
+    requestAnimationFrame(step);
+}
+function easeInVolume(audioTrack, easeFactor) {
+    easeFactor = easeFactor || 0.005; 
+    // audioTrack.volume = 0; // Start completely silent
+    audioTrack.play();     // Ensure the track is playing
+
+    function step() {
+        // Calculate how much volume is left to reach max (1.0)
+        const remainingVolume = 1.0 - audioTrack.volume;
+
+        if (remainingVolume > 0.01) {
+            // Close the gap by a percentage of what is left
+            audioTrack.volume += remainingVolume * easeFactor;
+            requestAnimationFrame(step);
+        } else {
+            audioTrack.volume = 1.0; // Lock perfectly at max volume
+        }
+    }
+    requestAnimationFrame(step);
+}
 
 ph1btn.addEventListener('click', () => {
+  easeInVolume(track1)
+
   const allStar = document.querySelector('.star');
   ph1Card.classList.add('is-falling');
   starCon.classList.add('starUp');
@@ -35,7 +77,7 @@ ph1btn.addEventListener('click', () => {
   const fontSize = 12;
   const columns = Math.floor(canvas.width / fontSize);
   
-  const matrixChars = "♥LOVE❤️YOU💖ALWAYSFOREVER💞01";
+  const matrixChars = "♥LOVE❤️YOU💖ALWAYSFOREVER💞0123456789🎂👑🎉💋";
   const rainbowColors = ['#ffffff99', '#ff91f999', '#ff005499', '#ff69b499', '#fff0f599'];
   // const rainbowColors = ['#ffffff', '#ff91f9', '#ff0054', '#ff69b4', '#fff0f5'];
   
@@ -141,6 +183,8 @@ function showNextWord() {
   // EXIT LOGIC
   if (wordIndex >= countdownWords.length) {
     isRaining = false; 
+    easeOutVolume(track1)
+    // track1.volume = 0.1
 
       const darkOverlay = document.createElement('div');
       darkOverlay.classList.add('darkingEffect');;
@@ -228,6 +272,7 @@ function loadNewElement() {
       // Smash Event// Inside your loadNewElement function, where the candle click is:
 
 candle.addEventListener('click', () => {
+    track2.play()
     // 1. Change Candle look
     candle.innerHTML = "🔥";
     instr.innerHTML = "✨ Suuuuuuu! ✨";
@@ -248,6 +293,7 @@ candle.addEventListener('click', () => {
 
     // 5. Let it rain, then everything falls away
     setTimeout(() => {
+      easeInVolume(track1)
         isRaining = false; // Stop spawning new rain
 
         setTimeout(() => {
@@ -294,11 +340,11 @@ function phase3Start() {
 
   const h2 = document.createElement('div');
   h2.className = 'mylove-text';
-  h2.innerText = "my love";
+  h2.innerText = "My Budiya";
   starCon2.appendChild(h2);
 
   const totalPhotos = 6; 
-  const messages = ["✨", "❤️", "💖", "Beautiful", "Always you", "Mine"];
+  const messages = ["✨", "My Budiya", "💖", "Beautiful", "Always you", "Mine"];
 
   // Shuffle the indices
   let photoIndices = Array.from({length: totalPhotos}, (_, i) => i + 1);
@@ -431,7 +477,7 @@ function showFinalMessage(wrapper) {
   msgBox.className = 'message-box';
   msgBox.innerHTML = `
     <h2 style="color: #ff69b4; font-family: 'Birthstone', cursive; font-size: 50px; margin-bottom: 10px;">Happy Birthday Mero Mutu!</h2>
-    <div style="font-family: 'Dancing Script', cursive; font-size: 20px; color: #eee;">
+    <div style="font-size: 20px; color: #eee;">
       <p>Aaja ko din mero lagi pani dherai special cha, kina bhane aaja timi janmeko din ho. Timro aagaman le yo sansar sundar bhayo, ra mero jindagi pani timile rangin banaidiyau. Timi mero hasi ko karan hau, mero khusi ko thau hau, ra mero jindagiko sabse pyaro manche hau.</p>
       <p>Timro ek muskan le mero din ramailo bancha, timro ek kura le mero mutu shanta huncha. Ma prarthana garchu ki timro jindagi sadai khusi, safalta, swasthya ra maya le bharipurna hos.</p>
       <p>Ma timilai dherai maya garchu, words le bujhauna sakdina kati maya garchu bhanera. Timi mero aaja ho, mero bholi ho, ra mero forever hau ❤️</p>

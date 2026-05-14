@@ -87,7 +87,6 @@ button, a {
     align-items: center;
     position: relative;
     width: 100%;
-    height: 100%;
     z-index: 3; /* क्यानभास भन्दा माथि */
 }
 
@@ -112,76 +111,27 @@ button, a {
   100% { transform: translateY(0%) scale(1); opacity: 1; }
     
 }
-/* --- CLEANED AND FIXED BUTTON ELEMENT --- */
-.card button.ripple-btn {
-  /* transform: translateY(30%); */
-    background-color: transparent;
+.card button {
+    background-color: #00000000;
+    color: white;
     width: 80px;
     height: 80px;
-    border-radius: 50%; /* Clean circular setup */
-    border: 1px solid #ce0045; /* Solid thematic red border */
-    position: fixed;
-    top:60%;
-    /* OVERFLOW REMOVED: Allowing rings to expand out beyond bounds */
-    overflow: visible; 
+    border-radius: 40rem;
+    border-color: red;
+    /* border-color: white; */
+    border-style: solid;
+    border-width: 1px;
+    position: relative;
+    overflow: hidden;
+    padding: 12px 24px;
+    font-size: 16px;
+    color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Keeps entrance animation, combined with an infinite pulsing filter */
     animation: UBtnCre-animation 5s ease forwards; 
-    z-index: 3;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Style for the text "U" inside */
-.playbtn {
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
-    font-size: 24px;
-}
-
-/* Base settings for both ripple rings */
-.ripple-btn::before,
-.ripple-btn::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    border: 1px solid #c40041; 
-    opacity: 1;
-    z-index: -1; /* Keeps rings behind the main button text */
-    pointer-events: none; /* Stops rings from blocking clicks */
-}
-
-/* Ring 1 animation settings (lasts 2 seconds total) */
-.ripple-btn::before {
-    
-    animation: rippleEffect 3s cubic-bezier(0.25, 0, 0, 1) infinite;
-    animation-delay: 1.2s; 
-  }
-
-/* Ring 2 animation settings (delayed by 1 second for alternating rhythm) */
-/* .ripple-btn::after {
-    animation: rippleEffect 3s cubic-bezier(0.25, 0, 0, 1) infinite;
-    animation-delay: 1.2s;  */
-/* } */
-
-/* The Ripple Animation Loop */
-@keyframes rippleEffect {
-    0% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(2); /* Controls how big the ring gets before vanishing */
-        opacity: 0;            /* Fades completely away */
-    }
+  z-index: 3; /* क्यानभास भन्दा माथि */
 }
 @keyframes UBtnCre-animation {
   35% { opacity: 0; }
