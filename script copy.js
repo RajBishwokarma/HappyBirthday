@@ -6,11 +6,7 @@ const ph1Card = document.querySelector('.card');
 const phase1 = document.querySelector('.card');
 const starCon = document.querySelector('.starCon');
 const phase2 = document.querySelector('.phase2')
-let darkOverlay = document.querySelector('.darkingEffect');
 let animationRain; // Declare at the top of the click listener
-let isRaining = true; // Flag to control the exit
-let spawnRate = 0; // Starts at 0 for a slow build-up
-let animationID;
 
 
 ph1btn.addEventListener('click', () => {
@@ -69,14 +65,20 @@ ph1btn.addEventListener('click', () => {
     }
   }, 20); // धेरै वर्षा गराउन २०ms राखिएको छ
 // Add these variables at the top of your phase2 logic
+let spawnRate = 0; // Starts at 0 for a slow build-up
+let isRaining = true; // Flag to control the exit
+let animationID;
 
 function drawMatrix() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.font = "bold " + fontSize + "px monospace";
 
+  // --- GRADUAL SPAWN LOGIC ---
   if (isRaining) {
+    // Slowly increase spawnRate until it hits a cap (e.g., 5)
     if (spawnRate < 5) spawnRate += 0.02; 
+    
     for(let k = 0; k < spawnRate; k++) {
       const randomColumn = Math.floor(Math.random() * columns);
       const currentDrops = columnsArray[randomColumn];
@@ -102,21 +104,21 @@ function drawMatrix() {
       
       drop.y += drop.speed;
 
-      // --- THE FIX IS HERE ---
+      // --- CLEAN EXIT LOGIC ---
+      // If drop goes off screen, just remove it. 
+      // Do NOT spawn a new one if isRaining is false.
       if (y > canvas.height) {
-        drops.splice(j, 1); // Remove the old drop
-
-        // ONLY respawn a new one here if raining is active
-        // This keeps the count stable instead of exploding
-        if (isRaining && Math.random() > 0.1) {
-          drops.push(createDrop(i));
-        }
+        drops.splice(j, 1);
       }
-      // ❌ DO NOT PUT EXTRA SPAWN CODE HERE
+      if (isRaining && Math.random() > 0.1) {
+        drops.push(createDrop(i));
+      }
     }
   }
-  animationRain = requestAnimationFrame(drawMatrix);
-}  
+    
+    animationRain = requestAnimationFrame(drawMatrix);
+  }
+  
   drawMatrix();
 
   // === ❤️ MULTIPLE DROPS MATRIX RAIN LOGIC END ===
@@ -132,8 +134,8 @@ function drawMatrix() {
   phase2.appendChild(countdownEl);
 
   // २. पालैपालो देखाउनुपर्ने शब्दहरूको सूची (Array)
-  const countdownWords = ["3", "2", "1", "Happy", "Birthday", "Mayalu", `❤️`];
-  // const countdownWords = ["3", "2", "1"];
+  // const countdownWords = ["3", "2", "1", "Happy", "Birthday", "Mayalu", `❤️`];
+  const countdownWords = ["3", "2", "1"];
   let wordIndex = 0;
 function showNextWord() {
   const currentWord = countdownWords[wordIndex];
@@ -142,19 +144,10 @@ function showNextWord() {
   if (wordIndex >= countdownWords.length) {
     isRaining = false; 
 
-      const darkOverlay = document.createElement('div');
-      darkOverlay.classList.add('darkingEffect');;
-      phase2.appendChild(darkOverlay);
-      darkOverlay.offsetWidth; 
-      darkOverlay.classList.add('fadeIn')
-      console.log(darkOverlay)
-      countdownEl.classList.add('squeezed'); 
-
     // Wait for the heart to be seen
     setTimeout(() => {
-  // DARK OVERLAY LOGIC
-    // if (wordIndex == 6) {
-    // }
+      countdownEl.classList.add('squeezed'); 
+
       setTimeout(() => {
         // cancelAnimationFrame(animationID);
         // canvas.remove();
@@ -162,6 +155,13 @@ function showNextWord() {
       }, 700); // Wait for the squeeze transition to finish
     }, 1500); 
     return;
+  }
+
+  // DARK OVERLAY LOGIC
+  if (wordIndex == 6) {
+    const darkOverlay = document.createElement('div');
+    darkOverlay.classList.add('darkingEffect');
+    phase2.appendChild(darkOverlay);
   }
 
   // TEXT RESET: Clean all animation classes before adding new ones
@@ -225,229 +225,43 @@ function loadNewElement() {
       
       setTimeout(() => { instr.style.opacity = '1'; }, 800);
 
-      // Smash Event// Inside your loadNewElement function, where the candle click is:
+      // Smash Event
+      candle.addEventListener('click', () => {
+        candle.innerHTML = "🔥";
+        instr.innerHTML = "✨ Suuuuuuu! ✨";
+        
+        [t1, t2, t3].forEach(t => t.classList.add('smashed'));
 
-candle.addEventListener('click', () => {
-    // 1. Change Candle look
-    candle.innerHTML = "🔥";
-    instr.innerHTML = "✨ Suuuuuuu! ✨";
-    
-    // 2. Reveal the rain by fading out the black overlay
-    darkOverlay = document.querySelector('.darkingEffect');
-    if (darkOverlay) {
-        darkOverlay.classList.add('fade-out');
-        darkOverlay.classList.remove('fade-in');
-    }
-
-    // 3. Crank up the rain intensity
-    isRaining = true;
-    spawnRate = 15; // Mega burst!
-
-    // 4. Reveal the tiers
-    [t1, t2, t3].forEach(t => t.classList.add('smashed'));
-
-    // 5. Let it rain, then everything falls away
-    setTimeout(() => {
-        isRaining = false; // Stop spawning new rain
-
+        // RE-ENABLE RAIN
+        isRaining = true;
+        spawnRate = 0; // Reset spawn rate so it builds up again
+        
+        // Let it rain for 2 seconds
         setTimeout(() => {
-            // Apply fall-away
+          isRaining = false; // Stop spawning new drops
+          
+          // Wait a bit for existing drops to clear, then drop the cake
+          setTimeout(() => {
+            // Apply fall-away class
             [t1, t2, t3, candle, instr].forEach(el => {
-                el.style.transform = ""; // Important: clear the stack position
                 el.classList.add('fall-away');
             });
-
-            // Final Clean up after cake is gone
+            
+            // Finally clean up everything
             setTimeout(() => {
-              console.log(darkOverlay);
-              darkOverlay.classList.remove('fade-out');
-              darkOverlay.classList.add('fade-in');
-              
-              setTimeout(() => {
-                  const canvas = document.querySelector('.Mcanvas');
-                  if(canvas) canvas.remove();
-                  cancelAnimationFrame(animationRain);
-                  phase3Start()
-                  // YOUR NEXT STEP: Start the photo gallery or stars here
-                  console.log("Cake phase finished. Loading next...");
-              }, 1500);
+              container.remove();
+              const canvas = document.querySelector('.Mcanvas');
+              if(canvas) canvas.remove();
+              cancelAnimationFrame(animationRain);
             }, 1500);
-        }, 1000);
-    }, 2500); // How long the rain "celebration" lasts
-}, { once: true });
+          }, 1000);
+        }, 2000);
+      }, { once: true });
     }, 1500);
   });
 }
-function phase3Start() {
-  const starCon2 = document.createElement('div');
-  starCon2.classList.add('fixedFull');
-  phase2.appendChild(starCon2);
-  
-  // Keep stars low for performance
-  createStars(starCon2, 100); 
 
-  // Cursive Text
-  const h1 = document.createElement('div');
-  h1.className = 'bday-text';
-  h1.innerText = "Happy Birthday";
-  starCon2.appendChild(h1);
-
-  const h2 = document.createElement('div');
-  h2.className = 'mylove-text';
-  h2.innerText = "my love";
-  starCon2.appendChild(h2);
-
-  const totalPhotos = 6; 
-  const messages = ["✨", "❤️", "💖", "Beautiful", "Always you", "Mine"];
-
-  // Shuffle the indices
-  let photoIndices = Array.from({length: totalPhotos}, (_, i) => i + 1);
-  photoIndices.sort(() => Math.random() - 0.5);
-
-  const centerX = window.innerWidth / 2 - 140;
-  const centerY = window.innerHeight / 2 - 190;
-
-  photoIndices.forEach((num, index) => {
-    const card = document.createElement('div');
-    card.className = 'polaroid';
-    
-    // Random message
-    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-    card.innerHTML = `
-      <img src="victim/${num}.jpg" loading="lazy">
-      <div class="caption">${randomMsg}</div>
-    `;
-
-    // --- OPTIMIZED LOADING ---
-    // Only scatter the first 4 photos to save the CPU/GPU
-    if (index < 4) {
-      card.classList.add('scattered');
-      const rx = Math.random() * (window.innerWidth - 300);
-      const ry = Math.random() * (window.innerHeight - 400);
-      const rr = (Math.random() - 0.5) * 50;
-      
-      card.style.left = `${rx}px`;
-      card.style.top = `${ry}px`;
-      card.style.transform = `rotate(${rr}deg)`;
-
-      // Fly to center after a short delay
-      setTimeout(() => {
-        card.classList.remove('scattered');
-        card.style.left = `${centerX}px`;
-        card.style.top = `${centerY}px`;
-        const stackRot = (Math.random() - 0.5) * 10;
-        card.style.transform = `rotate(${stackRot}deg) translateZ(${-index * 2}px)`;
-      }, 2000);
-
-    } else {
-      // The rest of the photos start directly at the center stack 
-      // but are hidden/transparent initially to prevent lag
-      card.style.opacity = "0";
-      card.style.left = `${centerX}px`;
-      card.style.top = `${centerY}px`;
-      const stackRot = (Math.random() - 0.5) * 10;
-      card.style.transform = `rotate(${stackRot}deg) translateZ(${-index * 2}px)`;
-      
-      // Fade them in slowly after the scatter animation is done
-      setTimeout(() => { card.style.opacity = "1"; }, 2500);
-    }
-
-    card.style.zIndex = 100 + (totalPhotos - index);
-
-    // Interaction
-    card.addEventListener('click', () => {
-      card.classList.add('drift-out');
-      
-      // Trigger the Heart/Letter at the end
-      if (index === totalPhotos - 1) {
-        setTimeout(() => showLetterButton(starCon2), 1000);
-      }
-    });
-
-    starCon2.appendChild(card);
-  });
-}
-
-function showLetterButton(container) {
-  const btn = document.createElement('button');
-  btn.className = 'letter-btn';
-  btn.innerText = 'OPEN LOVE LETTER';
-  container.appendChild(btn);
-
-  btn.onclick = () => {
-    btn.style.display = 'none'; // Hide button after click
-    createImageHeart(container);
-  };
-}
-function createImageHeart(container) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'heart-wrapper';
-  container.appendChild(wrapper);
-
-  const totalNodes = 40; // More circles = smoother connection
-  const scaleFactor = 15; // Lower scale + more nodes = no gaps
-  let currentNode = 0;
-
-  function spawnBatch() {
-    const batchSize = 5; 
-    
-    for (let i = 0; i < batchSize && currentNode < totalNodes; i++) {
-      // Calculate position
-      const t = (currentNode / totalNodes) * Math.PI * 2;
-      const x = 16 * Math.pow(Math.sin(t), 3);
-      const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-
-      const node = document.createElement('div');
-      node.className = 'heart-node';
-      
-      // Cycle through your photos (1-6.jpg)
-      const imgNum = (currentNode % 6) + 1;
-      node.innerHTML = `<img src="victim/${imgNum}.jpg">`;
-
-      wrapper.appendChild(node);
-
-      // Position with a slight delay for that "drawing" effect
-      setTimeout(() => {
-        node.style.opacity = '1';
-        // We use 50% as the origin and add the x/y offsets
-        node.style.left = `calc(50% + ${x * scaleFactor}px)`;
-        node.style.top = `calc(50% + ${y * scaleFactor}px)`;
-      }, 50);
-
-      currentNode++;
-    }
-
-    if (currentNode < totalNodes) {
-      setTimeout(spawnBatch, 100); 
-    } else {
-      showFinalMessage(wrapper);
-    }
-  }
-
-  spawnBatch();
-}
-function showFinalMessage(wrapper) {
-  const msgBox = document.createElement('div');
-  msgBox.className = 'message-box';
-  msgBox.innerHTML = `
-    <h2 style="color: #ff69b4; font-family: 'Birthstone', cursive; font-size: 50px; margin-bottom: 10px;">Happy Birthday Mero Mutu!</h2>
-    <div style="font-family: 'Dancing Script', cursive; font-size: 20px; color: #eee;">
-      <p>Aaja ko din mero lagi pani dherai special cha, kina bhane aaja timi janmeko din ho. Timro aagaman le yo sansar sundar bhayo, ra mero jindagi pani timile rangin banaidiyau. Timi mero hasi ko karan hau, mero khusi ko thau hau, ra mero jindagiko sabse pyaro manche hau.</p>
-      <p>Timro ek muskan le mero din ramailo bancha, timro ek kura le mero mutu shanta huncha. Ma prarthana garchu ki timro jindagi sadai khusi, safalta, swasthya ra maya le bharipurna hos.</p>
-      <p>Ma timilai dherai maya garchu, words le bujhauna sakdina kati maya garchu bhanera. Timi mero aaja ho, mero bholi ho, ra mero forever hau ❤️</p>
-      <p style="color: #ff69b4; font-size: 24px; margin-top: 20px;">Janmadin ko dherai dherai subhakamana mero Budiya 👑🎉</p>
-      <p>Love You So Much Budiya 💋❤️</p>
-    </div>
-  `;
-  wrapper.appendChild(msgBox);
-
-  // Smooth fade in
-  setTimeout(() => {
-    msgBox.classList.add('show');
-  }, 500);
-}
-
-function createStars(starContain,zIn) {
+function createStars() {
     for (let i = 0; i < STAR_COUNT; i++) {
         const star = document.createElement('div');
         star.classList.add('star');
@@ -470,7 +284,6 @@ function createStars(starContain,zIn) {
         star.style.left = `${x}%`;
         star.style.top = `${y}%`;
         star.style.setProperty('--duration', `${duration}s`);
-        star.style.zIndex =zIn || 0;
 
         // ✨ ३०% ताराहरूमा मात्र चमक (Glare) थप्ने
         if (Math.random() > 0.7) {
@@ -480,11 +293,11 @@ function createStars(starContain,zIn) {
             star.style.setProperty('--glare-size', `${glareSize}px`);
         }
 
-        starContain.appendChild(star);
+        starCon.appendChild(star);
     }
 }
 
-createStars(starCon);
+createStars();
 document.querySelector('.ripple-btn').addEventListener('click', function (e) {
   const button = e.currentTarget;
   

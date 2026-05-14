@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Birthstone&display=swap');
+
 * {
     box-sizing: border-box;
     overflow: hidden;
@@ -20,7 +23,7 @@ button, a {
 
 .root {
     width: 100%;
-    height: 100vh;
+    /* height: 100vh; */
     background: #000;
     display: flex;
     flex-direction: column;
@@ -90,17 +93,23 @@ button, a {
 .card .cardtext{
     filter: drop-shadow(0px 0px 30px pink);
     position: absolute;
-    font-weight: bold;
-    font-size: 7px;
-    font-family:  sans-serif;
+  font: bold 7px sans-serif;
     /* font-optical-sizing: auto; */
-    font-weight: bolder;
+    /* font-weight: bolder; */
     /* font-variation-settings:"wdth" 100; */
-    letter-spacing: 6px;
+    letter-spacing: 5px;
     line-height: 40px;
     text-align: center;
     padding: 20px;
     z-index: 2; /* क्यानभास भन्दा माथि */
+    animation: specialText-animation 3s ease forwards; 
+
+}
+@keyframes specialText-animation {
+  35% { opacity: 0; transform: translateY(50%);  }
+  50% { opacity: 1; }
+  100% { transform: translateY(0%) scale(1); opacity: 1; }
+    
 }
 .card button {
     background-color: #00000000;
@@ -180,11 +189,6 @@ button, a {
     z-index: 2; /* क्यानभास भन्दा माथि */
 
 }
-.test{
-    width: 10px;
-    height: 10px;
-    background: #000ccc;
-}
 .starUp {
     /* animation: starDownAni 2s cubic-bezier(0.7, 0, 1, 1) forwards; */
     animation: starUpAni 2s cubic-bezier(0.7, 0, 1, 1) forwards;
@@ -212,9 +216,21 @@ button, a {
 }
 
 
-/* matrix */
+/* Phase 2 matrix */
+
+.phase2 {
+  position: relative; /* यसले भित्रको absolute एलिमेन्टलाई बाँधेर राख्छ */
+  width: 100vw;
+  height: 100vh;
+    transform: translate(0%, -100%); 
+    display: flexbox;
+    justify-content: center;
+    align-items: center;
+    background: #00ccdd00;
+}
 .Mcanvas { 
-    /* background: #ffc0cb22; */
+    /* background: #ffc0cbcc; */
+    background: #ffc0cb00;
     display: block; 
     position: fixed; 
     top: 0; 
@@ -226,3 +242,391 @@ button, a {
   35% { opacity: 0; }
   100% { transform: translateY(300%) scale(0.9); opacity: 1; }
 } */
+
+/* काउन्टडाउन कन्टेनर स्टाइल */
+.countdown-overlay {
+    /* background: #000ccccc; */
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10; /* म्याट्रिक्स रेन भन्दा माथि देखाउन */
+  font-family: 'Arial Black', sans-serif;
+  font-size: 28px; /* मोबाइलका लागि उपयुक्त साइज, कम्प्युटरमा अझ ठूलो देखिन्छ */
+  font-weight: bold;
+  pointer-events: none;
+  color: #ffffff;
+  text-shadow: 0 0 20px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054;
+  filter: drop-shadow(0 0 40px #ff69b4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* शब्दहरू परिवर्तन हुँदा चल्ने एनिमेसन क्लास */
+.pop-text {
+  animation: textPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes textPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.5); /* अलिकति ठूलो भएर */
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1); /* आफ्नो साइजमा सेट हुने */
+    opacity: 1;
+  }
+}
+
+/* अन्तिमको मुटु र विशेष सन्देशका लागि अझ ठूलो र बबलिङ स्टाइल */
+.final-wish {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 700;
+  font-size: 28px;
+  color: #ff0054;
+  text-shadow: 0 0 20px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054, 0 0 40px #ff0054;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s;
+  animation: heartbeat 0.8s ease-out forwards;
+  animation: heartbeat 1s  ;
+}
+@keyframes heartbeat {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 1; }
+}
+
+/* The heart's normal state (assuming .final-wish is your heart) */
+
+/* The squeezed state */
+
+/* The new element's starting state */
+.BigBlackCake {
+  /* transform: scale(0); */
+  /* transition: transform 0.6s ease-out; */
+}.squeezed {
+  transform: scale(0) !important;
+  opacity: 0 !important;
+}
+.unsqueezed {
+  /* background: #000ccc55; */
+  color: whitesmoke;
+  position: fixed;
+  inset: 0; /* shorthand for top/left/right/bottom 0 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
+  /* animation: unSqueezeAni 1s reverse; */
+  z-index: 20; /* म्याट्रिक्स रेन भन्दा माथि देखाउन */
+}
+.unsqueezed.show {
+  transform: scale(1);
+  opacity: 1;
+}
+.span{
+    /* position: absolute; */
+    width: 100%;
+    height: 100%;
+    /* background: #000ccc; */
+
+}
+@keyframes squeezeAni {
+  0% {
+    transform: scale(1.5);
+    opacity: 1
+  }
+  50%{
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0
+  }
+}
+@keyframes unSqueezeAni {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.darkingEffect {
+  position: fixed;
+  inset: 0;
+  background: black;
+  /* width: 100vw;
+  height: 100vh; */
+  /* background: #000ccc; */
+    /* background-color: #00000000; */
+    /* animation: darkingEffectAni 3s ease forwards; */
+    z-index: 2;
+      opacity: 0;
+  transition: opacity 0.5s ease-in-out; /* Must be on the base class */
+    pointer-events: none; /* Let clicks pass through to the candle */
+}
+/* Add a class to fade it out */
+.darkingEffect.fadeIn {
+  opacity: 1;
+  /* animation: fadeInAni 1s ease-in; */
+}
+.darkingEffect.fade-out {
+  opacity: 0;
+}
+@keyframes fadeInAni {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes darkingEffectAni {
+  0% {
+    background-color: #00000000;
+  }
+  50% {
+  }
+  100% {
+    /* background-color: #000; */
+  }
+}
+/* Container for the cake tiers */
+.cake-container {
+  background: #000ccc00;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0; /* They start overlayed/touching */
+  /* box-shadow: 0 0px 20px rgb(255, 95, 95); */
+  filter: drop-shadow(0 0px 20px rgb(255, 95, 95));
+  z-index: 40;
+}
+
+.tier {
+  /* width: 180px; */
+  height: 50px;
+  padding:0px 40px 0px 40px ;
+  background: #ff69b4; 
+  /* background: #ff69b4;  */
+  border-top: 3px solid #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #ff69b4; /* Hide text initially by matching background */
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: absolute; /* Overlay initially */
+  /* filter: drop-shadow(0 0px 20px rgb(255, 95, 95)); */
+  z-index: 35;
+}
+
+/* Candle Styling */
+.candle-btn {
+  font-size: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  transition: all 0.8s ease-out;
+  z-index: 30;
+  filter: drop-shadow(0 0 10px orange);
+}
+
+/* Instruction Text */
+.instruction {
+  color: red; 
+  opacity: 0;
+  transition: opacity 0.5s;
+  text-transform: uppercase;
+  position: absolute;
+  font: bold 14px sans-serif;
+  letter-spacing: 5px;
+  line-height: 40px;
+  text-align: center;
+  padding: 20px;
+  /* box-shadow: 0 0 20px pink; */
+  filter: drop-shadow(0 0 10px pink);
+  /* filter: drop-shadow(0px 0px 15px pink); */
+}
+
+/* When smashed, reveal words and make transparent */
+.tier.smashed {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 20px white;
+}
+
+/* Cake falling away */
+.tier.fall-away {
+  transform: translateY(100vh) rotate(20deg) !important;
+  opacity: 0 !important;
+  transition: transform 1.5s ease-in, opacity 1s !important;
+}
+.candle-btn.fall-away, .instruction.fall-away {
+  transform: translateY(100vh) !important;
+  opacity: 0 !important;
+  transition: transform 1.2s ease-in, opacity 1s !important;
+}
+
+
+/* Phase 3 */
+
+
+.fixedFull {
+  background: #050505; 
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 2000px; /* Increased for smoother 3D */
+  overflow: hidden;
+}
+
+/* Ensure stars are behind everything */
+.starCon, .starCon2 {
+  z-index: 1 !important; 
+  pointer-events: none;
+}
+
+.gallery-container {
+  position: relative;
+  width: 280px; /* Scaled down slightly for performance */
+  height: 380px;
+  z-index: 100; /* Way above stars */
+  transform-style: preserve-3d;
+}
+
+.polaroid {
+  position: absolute;
+  width: 280px;
+  height: 380px;
+  background: white;
+  padding: 12px 12px 50px 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+  border-radius: 2px;
+  cursor: pointer;
+  /* Performance Boosters */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform, opacity; /* Essential for mobile/lag fix */
+}
+
+.polaroid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.1);
+  pointer-events: none; /* Prevents accidental image dragging */
+}
+
+/* The Dreamy Drift Out */
+.drift-out {
+  transform: translateY(-120vh) rotate(15deg) scale(0.8) !important;
+  opacity: 0 !important;
+  transition: all 1.2s cubic-bezier(0.4, 0, 1, 1) !important;
+}
+
+/* Center the button properly */
+.letter-btn {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%); /* This centers it perfectly */
+  border: 1px solid red;
+  border-radius: 15px;
+  padding: 8px 20px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  z-index: 500;
+  font-family: 'Dancing Script', cursive;
+}
+
+.letter-btn:hover {
+  background: #ff4d4d;
+  box-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
+}
+
+/* The Heart Container */
+.heart-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 300;
+  pointer-events: none;
+}
+
+/* Circular Images forming the heart */
+.heart-node {
+  position: absolute;
+  width: 70px; /* Adjust size if you want them to overlap more */
+  height: 70px;
+  border-radius: 50%;
+  border: 1px solid #ff4d4d;
+  overflow: hidden;
+  filter: grayscale(100%);
+  opacity: 0;
+  /* Pull them slightly toward their center so they overlap */
+  margin-left: -35px; 
+  margin-top: -35px;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+  transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 305;
+}
+
+.heart-node img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.message-box {
+  width: 90%;
+  max-width: 500px; /* Wider for the long message */
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.8); /* Darker for better contrast */
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  color: white;
+  text-align: center;
+  border-radius: 30px;
+  backdrop-filter: blur(15px);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 1.5s ease;
+  z-index: 400;
+  max-height: 80vh;
+  overflow-y: auto;
+  line-height: 1.8;
+}
+.message-box.show {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  pointer-events: auto; /* Allows scrolling */
+}
+/* Custom Scrollbar for the message */
+.message-box::-webkit-scrollbar {
+  width: 5px;
+}
+.message-box::-webkit-scrollbar-thumb {
+  background: #ff69b4;
+  border-radius: 10px;
+}
+
